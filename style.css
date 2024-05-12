@@ -29,3 +29,12 @@ button {
     height: fit-content;
     width: fit-content;
 }
+
+.container {
+    display: none;
+}
+
+.container-show {
+    display: flex;
+    flex-direction: column;
+}
