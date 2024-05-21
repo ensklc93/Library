@@ -1,11 +1,11 @@
 const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const pagesInput = document.querySelector("#pages");
-const readInput = document.querySelector("#read");
-const notreadInput = document.querySelector("#not-read");
+const readInput = document.getElementsByName("read")
 const addToLibrary = document.querySelector("#addToLibrary");
 const showLibrary = document.querySelector("#showLibrary");
 const container = document.querySelector(".container-show");
+
 
 let myLibrary = [];
 
@@ -20,12 +20,21 @@ function Book(title, author, pageNumbers, read) {
   this.id = title + pageNumbers;
 }
 
+function checkInput() {
+  for (var i = 0, length = readInput.length; i < length; i++) {
+    if (readInput[i].checked) {
+      return readInput[i].value
+    }
+  }
+}
+
+
 function addBookToLibrary() {
   const newBook = new Book(
     titleInput.value,
     authorInput.value,
     pagesInput.value,
-    readInput.value
+    checkInput()
   );
   return myLibrary.push(newBook);
 }
@@ -79,6 +88,9 @@ function listOfBooks() {
 
     container.appendChild(usersBox);
 
+    readButton.addEventListener("click", () => {
+
+    })
 
     deleteButton.addEventListener("click", () => {
       let ArrayId = deleteButton.getAttribute("data-id");
