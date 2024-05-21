@@ -13,21 +13,19 @@
     <div class="wrapper">
       <form action="">
         <span>Title</span>
-        <input type="text" id="title" required/>
+        <input type="text" id="title" name="title" required>
         <span>Author</span>
         <input type="text" id="author" required/>
-        <span>Pages</span>
-        <input type="text" id="pages" required/>
+        <span>Number of pages</span>
+        <input type="number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" id="pages" required/>
         <span>Have you read it?</span>
         <input type="text" id="read" required/>
-        <button type="button" value="submit" id="addToLibrary" >Add to Library!</button>
-        <button type="button" value="list" id="showLibrary">Show Library</button>
+        <button type="submit" value="submit" id="addToLibrary">Add to Library!</button>
+        <button type="button" value="list" id="showLibrary" >Show/Hide Library</button>
       </form>
-
-      <div class="container">
-     
-      </div>
-  
     </div>
+    <div class="container-show">
+    </div>  
   </body>
 </html>
+
