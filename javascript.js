@@ -89,7 +89,15 @@ function listOfBooks() {
     container.appendChild(usersBox);
 
     readButton.addEventListener("click", () => {
-
+      if(readText.innerText === "read") {
+        myLibrary[i].read = "not read";
+        readText.innerText = "not read";
+        return infoText.innerText = `${myLibrary[i].info()}`;
+      } else {
+        myLibrary[i].read = "read";
+        readText.innerText = "read";
+        return infoText.innerText = `${myLibrary[i].info()}`;
+      }
     })
 
     deleteButton.addEventListener("click", () => {
