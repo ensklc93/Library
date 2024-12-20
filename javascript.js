@@ -2,122 +2,134 @@ const titleInput = document.querySelector("#title");
 const authorInput = document.querySelector("#author");
 const pagesInput = document.querySelector("#pages");
 const readInput = document.getElementsByName("read")
-const addToLibrary = document.querySelector("#addToLibrary");
-const showLibrary = document.querySelector("#showLibrary");
+const addButton = document.querySelector("#addButton");
+const showButton = document.querySelector("#showButton");
 const container = document.querySelector(".container-show");
 
+class Book{
+  constructor(title, author, pageNumbers, read) {
+    this.title = title;
+    this.author =author;
+    this.pageNumbers = pageNumbers;
+    this.read = this.checkInput(read);
+  }
 
-let myLibrary = [];
+  get id() {
+    return this.title + this.pageNumbers;
+  }
 
-function Book(title, author, pageNumbers, read) {
-  (this.title = title),
-    (this.author = author),
-    (this.pageNumbers = pageNumbers),
-    (this.read = read),
-    (this.info = function () {
-      return `${this.title} is written by ${this.author} has total pages of ${this.pageNumbers} and I did ${this.read} it`;
-    });
-  this.id = title + pageNumbers;
+  get info(){
+    return `${this.title} is written by ${this.author} has total pages of ${this.pageNumbers} and I did ${this.read} it`;
+  }
+
+  checkInput(read) {
+    return read[0].checked ? "read" : "not read";
+  }
 }
 
-function checkInput() {
-  for (var i = 0, length = readInput.length; i < length; i++) {
-    if (readInput[i].checked) {
-      return readInput[i].value
+class Library{
+  constructor(){
+    this.books = []
+  }
+
+  addBook(book){
+    this.books.push(book)
+  }
+
+  removeBook(id){
+    this.books = this.books.filter(book => book.id !== id)
+  }
+
+  getBooks(){
+    return this.books
+  }
+}
+
+class UI {
+  constructor(container, library){
+    this.container = container;
+    this.library = library
+  }
+
+  listOfBooks(){
+    this.removeList();
+
+    this.library.getBooks().forEach(book => {
+      const usersBox = document.createElement("div");
+      const deleteButton = document.createElement("button");
+      const authorText = document.createElement("p");
+      const headerText = document.createElement("h1");
+      const pageNumbersText = document.createElement("p");
+      const readText = document.createElement("p");
+      const infoText = document.createElement("p");
+      const readButton = document.createElement("button");
+
+      authorText.innerText = `${book.author}`;
+      headerText.innerText = `${book.title}`;
+      pageNumbersText.innerText = `${book.pageNumbers}`;
+      readText.innerText = `${book.read}`;
+      infoText.innerText = `${book.info}`;
+      deleteButton.innerText = "Delete";
+      deleteButton.dataset.id = book.id;
+      readButton.innerText = "Read/Not Read";
+
+      usersBox.appendChild(headerText);
+      usersBox.appendChild(authorText);
+      usersBox.appendChild(pageNumbersText);
+      usersBox.appendChild(readText);
+      usersBox.appendChild(readButton);
+      usersBox.appendChild(infoText);
+      usersBox.appendChild(deleteButton);
+
+      this.container.appendChild(usersBox);
+
+      readButton.addEventListener("click", () => {
+        if (readText.innerText === "read") {
+          book.read = "not read";
+        } else {
+          book.read = "read";
+        }
+        readText.innerText = book.read;
+        infoText.innerText = book.info;
+      });
+
+      deleteButton.addEventListener("click", () => {
+        this.library.removeBook(book.id);
+        this.container.removeChild(usersBox)
+      })
+    });
+  }
+
+  removeList(){
+    while (this.container.firstChild) {
+      this.container.removeChild(this.container.firstChild);
     }
   }
 }
 
+const myLibrary = new Library();
+const uiLibrary = new UI(container, myLibrary)
 
-function addBookToLibrary() {
-  const newBook = new Book(
-    titleInput.value,
-    authorInput.value,
-    pagesInput.value,
-    checkInput()
-  );
-  return myLibrary.push(newBook);
-}
 
-addToLibrary.addEventListener("click", (e) => {
+addButton.addEventListener("click", (e) => {
   if (
     titleInput.value === "" ||
     authorInput.value === "" ||
-    pagesInput.value === "" ||
-    read.value === ""
-  ) {
-    return;
-  }
-  addBookToLibrary();
-  removeList();
+    pagesInput.value === ""
+  ) return;
+  
+  const newBook = new Book(titleInput.value, authorInput.value, pagesInput.value, readInput)
+  myLibrary.addBook(newBook);
+
+  uiLibrary.listOfBooks();
+
   titleInput.value = "";
   authorInput.value = "";
   pagesInput.value = "";
   readInput.value = "";
-  listOfBooks();
   e.preventDefault();
 });
 
-function listOfBooks() {
-  for (let i = 0; i < myLibrary.length; i++) {
-    const usersBox = document.createElement("div");
-    const deleteButton = document.createElement("button");
-    const authorText = document.createElement("p");
-    const headerText = document.createElement("h1");
-    const pageNumbersText = document.createElement("p");
-    const readText = document.createElement("p");
-    const infoText = document.createElement("p");
-    const readButton = document.createElement("button")
-
-    authorText.innerText = `${myLibrary[i].author}`;
-    headerText.innerText = `${myLibrary[i].title}`;
-    pageNumbersText.innerText = `${myLibrary[i].pageNumbers}`;
-    readText.innerText = `${myLibrary[i].read}`;
-    infoText.innerText = `${myLibrary[i].info()}`;
-    deleteButton.innerText = "Delete";
-    deleteButton.dataset.id = `${myLibrary[i].id}`;
-    readButton.innerText = "Read/Not Read"
-
-    usersBox.appendChild(headerText);
-    usersBox.appendChild(authorText);
-    usersBox.appendChild(pageNumbersText);
-    usersBox.appendChild(readText);
-    usersBox.appendChild(readButton);
-    usersBox.appendChild(infoText);
-    usersBox.appendChild(deleteButton);
-
-    container.appendChild(usersBox);
-
-    readButton.addEventListener("click", () => {
-      if(readText.innerText === "read") {
-        myLibrary[i].read = "not read";
-        readText.innerText = "not read";
-        return infoText.innerText = `${myLibrary[i].info()}`;
-      } else {
-        myLibrary[i].read = "read";
-        readText.innerText = "read";
-        return infoText.innerText = `${myLibrary[i].info()}`;
-      }
-    })
-
-    deleteButton.addEventListener("click", () => {
-      let ArrayId = deleteButton.getAttribute("data-id");
-      if (ArrayId === myLibrary[i].id) {
-        container.removeChild(usersBox)
-        myLibrary = myLibrary.filter(users => users.id !== myLibrary[i].id)
-      }
-    });
-  }
-}
-
-showLibrary.addEventListener("click", () => {
+showButton.addEventListener("click", () => {
   container.classList.toggle("container-show");
 });
-
-function removeList() {
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
-}
-
-listOfBooks();
